@@ -12,6 +12,7 @@ import { withI18n } from '@lingui/react'
 import config from 'utils/config'
 
 import styles from './index.less'
+import store from "store";
 
 const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
@@ -30,11 +31,17 @@ class Register extends PureComponent {
     e.preventDefault();
     const { dispatch, form } = this.props
     const { validateFieldsAndScroll } = form
+    const user = store.get('user');
     validateFieldsAndScroll((err, values) => {
       if (err) {
         return
       }
-      dispatch({ type: 'register/register', payload: values })
+      dispatch({ type: 'register/register', payload: {
+        ...values,
+          groupCode: user.groupCode,
+          isInvitation: false,
+        }
+      })
     });
   };
 

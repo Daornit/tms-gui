@@ -4,7 +4,8 @@ import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { CANCEL_REQUEST_MESSAGE } from 'utils/constant'
 import store from 'store'
-import qs from 'qs'
+import { router } from 'utils'
+import qs, {stringify} from 'qs'
 
 const { CancelToken } = axios
 window.cancelRequest = new Map()
@@ -35,7 +36,9 @@ export default function request(options) {
   }
 
   options.url = url
-  options.params = cloneData
+
+  if(options.method === 'GET') options.params = cloneData
+
   options.headers = {
     'Authorization': store.get('token')
   }
@@ -46,6 +49,7 @@ export default function request(options) {
     })
   })
 
+  console.log(options);
   return axios(options)
     .then(response => {
       const { statusText, status, data } = response
@@ -86,6 +90,20 @@ export default function request(options) {
       } else {
         statusCode = 600
         msg = error.message || 'Network Error'
+      }
+
+      if(statusCode == 403 || msg == 'Таны Token ны хугацаа дууссан байна.'){
+        store.set('routeList', [])
+        store.set('token', "")
+        store.set('permissions', { visit: [] })
+        store.set('user', {})
+        store.set('isInit', false)
+        router.push({
+          pathname: '/login',
+          search: stringify({
+            from: window.location.pathname,
+          }),
+        })
       }
 
       /* eslint-disable */

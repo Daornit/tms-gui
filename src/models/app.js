@@ -8,8 +8,9 @@ import { queryLayout, pathMatchRegexp } from 'utils'
 import { CANCEL_REQUEST_MESSAGE } from 'utils/constant'
 import api from 'api'
 import config from 'config'
+import {notification} from "antd";
 
-const { queryRouteList, logoutUser, queryUserInfo } = api
+const { inboxReadByCode, notificationUrl, inboxURL, workSpaceUsers,   queryRouteList, logoutUser, queryUserInfo, queryUserArray, createWorkSpaceUrl } = api
 
 const goDashboard = () => {
   if (pathMatchRegexp(['/', '/login', '/register', '/confirm'], window.location.pathname)) {
@@ -35,20 +36,12 @@ export default {
     locationQuery: {},
     theme: store.get('theme') || 'light',
     collapsed: store.get('collapsed') || false,
-    notifications: [
-      {
-        title: 'New User is registered.',
-        date: new Date(Date.now() - 10000000),
-      },
-      {
-        title: 'Application has been approved.',
-        date: new Date(Date.now() - 50000000),
-      },
-    ],
+    notifications: [],
   },
   subscriptions: {
     setup({ dispatch }) {
       dispatch({ type: 'query' })
+      dispatch({ type: 'queryNotification'})
     },
     setupHistory({ dispatch, history }) {
       history.listen(location => {
@@ -76,6 +69,57 @@ export default {
     },
   },
   effects: {
+    *queryInbox({ payload = {} }, { call, put }) {
+      const data = yield call(inboxURL, payload)
+      console.log("INBOX " ,data);
+      if (data) {
+        return data;
+      }
+    },
+    *queryNotification({ payload = {} }, { call, put }) {
+      const data = yield call(notificationUrl, payload)
+      if (data) {
+        yield put({
+          type: 'queryInboxSuccess',
+          payload: {
+            notifications: data.list,
+          }
+        });
+      }
+    },
+    *readInboxByCode({ payload }, { call, put }) {
+      const data = yield call(inboxReadByCode, payload)
+      const { success, message, status, ...other } = data
+      if (success) {
+        return data;
+      } else {
+        throw data
+      }
+    },
+
+    *getWorkSpaceUsers({ payload }, { call, put }) {
+      const data = yield call(workSpaceUsers, payload)
+      const { success, message, status, ...other } = data
+      if (success) {
+        return data;
+      } else {
+        throw data
+      }
+    },
+    *createWorkSpace({ payload }, { call, put }) {
+      const data = yield call(createWorkSpaceUrl, payload)
+      if (data.success) {
+        notification.success({message: "Амжилттай", description: "Ажлын орчин үүслээ."})
+      } else {
+        throw data
+      }
+    },
+
+    *queryUserGroup({ payload = {} }, { call, put }) {
+      const data = yield call(queryUserArray, payload)
+      return data;
+    },
+
     *query({ payload }, { call, put, select }) {
       // store isInit to prevent query trigger by refresh
       const isInit = store.get('isInit')
@@ -108,29 +152,23 @@ export default {
             return cases.every(_ => _)
           })
         }
-        store.set('token', user.token)
         store.set('routeList', routeList)
         store.set('permissions', permissions)
         store.set('user', user)
         store.set('isInit', true)
         goDashboard()
       } else if (queryLayout(config.layouts, locationPathname) !== 'public') {
+
         if(pathMatchRegexp(['/register'], window.location.pathname)) {
           router.push({
             pathname: '/register',
-            search: stringify({
-              from: locationPathname,
-            }),
           })
           return;
         }
 
-        if(pathMatchRegexp(['/confirm'], window.location.pathname)) {
+        if(pathMatchRegexp(['/confirm/:id'], window.location.pathname)) {
           router.push({
-            pathname: '/confirm',
-            search: stringify({
-              from: locationPathname,
-            }),
+            pathname: window.location.pathname,
           })
           return;
         }
@@ -149,7 +187,7 @@ export default {
       const data = yield call(logoutUser)
       if (data.success) {
         store.set('routeList', [])
-        store.set('token', null)
+        store.set('token', "")
         store.set('permissions', { visit: [] })
         store.set('user', {})
         store.set('isInit', false)
@@ -175,6 +213,15 @@ export default {
     handleCollapseChange(state, { payload }) {
       store.set('collapsed', payload)
       state.collapsed = payload
+    },
+
+    queryInboxSuccess(state, { payload }) {
+      state.notifications = payload.notifications;
+    },
+
+    updateInboxSuccess(state, { payload }) {
+      console.log("payload :::::" ,payload)
+      state.notifications = payload.notifications;
     },
 
     allNotificationsRead(state) {

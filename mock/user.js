@@ -50,7 +50,7 @@ const adminUsers = [
     id: 0,
     username: 'admin',
     password: 'admin',
-    permissions: userPermission.ADMIN,
+      permissions: userPermission.ADMIN,
     avatar: randomAvatar(),
   },
   {

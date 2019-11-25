@@ -89,7 +89,7 @@ class User extends PureComponent {
       onChange: page => {
         this.handleRefresh({
           page: page.current,
-          pageSize: page.pageSize,
+          size: page.pageSize,
         })
       },
       onDeleteItem: id => {

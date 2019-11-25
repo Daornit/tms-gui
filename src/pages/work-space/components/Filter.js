@@ -62,9 +62,9 @@ class Filter extends Component {
     return (
       <Row gutter={24}>
         <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-          {getFieldDecorator('email', { initialValue: email })(
+          {getFieldDecorator('name', { initialValue: email })(
             <Search
-              placeholder={i18n.t`Search email`}
+              placeholder={i18n.t`Төслийн нэрээ хайх`}
               onSearch={this.handleSubmit}
             />
           )}
@@ -82,14 +82,14 @@ class Filter extends Component {
                 className="margin-right"
                 onClick={this.handleSubmit}
               >
-                <Trans>Search</Trans>
+                <Trans>Хайх</Trans>
               </Button>
               <Button onClick={this.handleReset}>
-                <Trans>Reset</Trans>
+                <Trans>Шинэжлэх</Trans>
               </Button>
             </div>
             <Button type="ghost" onClick={onAdd}>
-              <Trans>Create Work Package</Trans>
+              <Trans>Шинэ төсөл</Trans>
             </Button>
           </Row>
         </Col>
@@ -106,4 +106,3 @@ Filter.propTypes = {
 }
 
 export default Filter
-

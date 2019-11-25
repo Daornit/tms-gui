@@ -5,6 +5,7 @@ import { DropOption } from 'components'
 import { Trans, withI18n } from '@lingui/react'
 import Link from 'umi/link'
 import styles from './List.less'
+import router from "umi/router";
 
 const { confirm } = Modal
 
@@ -17,11 +18,13 @@ class List extends PureComponent {
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: i18n.t`Are you sure delete this record?`,
+        title: i18n.t`Энэхүү төслийг устгахдаа итгэлтэй байна уу?`,
         onOk() {
           onDeleteItem(record.id)
         },
       })
+    } else if(e.key === '3') {
+      router.push('/work-package/' + record.code)
     }
   }
 
@@ -30,42 +33,39 @@ class List extends PureComponent {
 
     const columns = [
       {
-        title: <Trans>Avatar</Trans>,
-        dataIndex: 'avatar',
-        key: 'avatar',
-        width: 80,
-        fixed: 'left',
-        render: text => <Avatar style={{ marginLeft: 8 }} src={text} />,
+        title: <Trans>Нэр</Trans>,
+        dataIndex: 'name',
+        key: 'name',
+        width: 150,
+        render: (text, record) =>  <span style={{color : !record.isDeleted ? "green": "red"}}>{text}</span>,
       },
       {
-        title: <Trans>Email</Trans>,
-        dataIndex: 'email',
-        key: 'email',
-        render: (text, record) => <span style={{color : record.enabled ? "green": "red"}}>{text}</span>
+        title: <Trans>Харагдац</Trans>,
+        dataIndex: 'defaultView',
+        key: 'defaultView',
+        render: (text) => <span>
+          {(text === 'list' ? 'Жагсаалт': '')}
+          {(text === 'grantChart' ? 'Гант чарт': '')}
+        </span>
       },
       {
-        title: <Trans>First Name</Trans>,
-        dataIndex: 'firstName',
-        key: 'firstName',
+        title: <Trans>Эхлэх хугацаа</Trans>,
+        dataIndex: 'startDate',
+        key: 'startDate',
       },
       {
-        title: <Trans>Last Name</Trans>,
-        dataIndex: 'lastName',
-        key: 'lastName',
+        title: <Trans>Дуусах хугацаа</Trans>,
+        dataIndex: 'endDate',
+        key: 'endDate',
         width: 150,
       },
       {
-        title: <Trans>Phone</Trans>,
-        dataIndex: 'phone',
-        key: 'phone',
+        title: <Trans>Гүйцэтгэл</Trans>,
+        dataIndex: 'percentage',
+        key: 'percentage',
       },
       {
-        title: <Trans>Role</Trans>,
-        dataIndex: 'role',
-        key: 'role',
-      },
-      {
-        title: <Trans>Operation</Trans>,
+        title: <Trans>Үйлдэл</Trans>,
         key: 'operation',
         fixed: 'right',
         render: (text, record) => {
@@ -73,8 +73,9 @@ class List extends PureComponent {
             <DropOption
               onMenuClick={e => this.handleMenuClick(record, e)}
               menuOptions={[
-                { key: '1', name: i18n.t`Update` },
-                { key: '2', name: i18n.t`Delete` },
+                { key: '1', name: i18n.t`Засах` },
+                { key: '2', name: i18n.t`Устгах` },
+                { key: '3', name: i18n.t`Орох` },
               ]}
             />
           )

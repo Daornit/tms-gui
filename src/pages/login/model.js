@@ -12,7 +12,6 @@ export default {
   effects: {
     *login({ payload }, { put, call, select }) {
       const data = yield call(loginUser, payload)
-      console.log("data :: ", data)
       const { locationQuery } = yield select(_ => _.app)
       if (data.success) {
         store.set('token', data.token)

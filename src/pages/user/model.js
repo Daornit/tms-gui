@@ -1,11 +1,13 @@
 import modelExtend from 'dva-model-extend'
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
+import store from 'store'
 import { pageModel } from 'utils/model'
+import {notification} from "antd";
 
 const {
   queryUserList,
-  createUser,
+  registerUser,
   removeUser,
   updateUser,
   removeUserList,
@@ -42,11 +44,11 @@ export default modelExtend(pageModel, {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: data.content,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
+              current: (data.pageable.pageNumber + 1) || 1,
+              pageSize: data.pageable.pageSize || 10,
+              total: data.totalElements,
             },
           },
         })
@@ -78,8 +80,10 @@ export default modelExtend(pageModel, {
     },
 
     *create({ payload }, { call, put }) {
-      const data = yield call(createUser, payload)
+      console.log(payload);
+      const data = yield call(registerUser, payload)
       if (data.success) {
+        notification.success({message: "Та амжилттай урилга илгээлээ", description: "Хэрэглэгч баталгаажуулсан тохиолдолд email талбар ногоон өнгөтэй болно."})
         yield put({ type: 'hideModal' })
       } else {
         throw data

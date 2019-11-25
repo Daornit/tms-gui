@@ -3,6 +3,7 @@ import umiRouter from 'umi/router'
 import pathToRegexp from 'path-to-regexp'
 import { i18n } from './config'
 import moment from 'moment'
+import store from 'store'
 import 'moment/locale/zh-cn'
 
 export classnames from 'classnames'
@@ -268,4 +269,21 @@ export function setLocale(language) {
       search: window.location.search,
     })
   }
+}
+
+export function formatDate(date) {
+  let dt = new Date(date)
+  return moment(dt).format('YYYY-MM-DD');
+}
+
+export function addRoute(route) {
+  let routes = store.get('routeList');
+  routes.push(route);
+  store.set('routeList', routes);
+}
+
+export function removeRoute(route) {
+  let routes = store.get('routeList');
+  routes.remove(route);
+  store.set('routeList', routes);
 }
