@@ -5,10 +5,10 @@ import { pageModel } from 'utils/model'
 import {notification} from "antd";
 import store from "store";
 
-const { createTaskURL, deleteTaskURL, updateTaskURL, addCommentWorkPackage, queryWorkPackage, deleteWorkPackage, updateWorkPackage  } = api
+const { createTaskURL, deleteTaskURL, updateTaskURL, queryTask, addCommentTask  } = api
 
 export default modelExtend(pageModel, {
-  namespace: 'workPackageDetail',
+  namespace: 'task',
 
   state: {
     data: {},
@@ -17,7 +17,7 @@ export default modelExtend(pageModel, {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        const match = pathMatchRegexp('/work-package/:id', pathname)
+        const match = pathMatchRegexp('/task/:id', pathname)
         if (match) {
           dispatch({ type: 'query', payload: { id: match[1] } })
         }
@@ -27,7 +27,7 @@ export default modelExtend(pageModel, {
 
   effects: {
     *query({ payload }, { call, put }) {
-      const data = yield call(queryWorkPackage, payload)
+      const data = yield call(queryTask, payload)
       const { success, message, status, ...other } = data
       if (success) {
         yield put({
@@ -41,8 +41,8 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *queryWorkPackage({ payload }, { call, put }) {
-      const data = yield call(queryWorkPackage, payload)
+    *queryPromise({ payload }, { call, put }) {
+      const data = yield call(queryTask, payload)
       const { success, message, status, ...other } = data
       if (success) {
         return data;
@@ -52,9 +52,11 @@ export default modelExtend(pageModel, {
     },
 
     *delete({ payload }, { call, put, select }) {
-      const data = yield call(deleteWorkPackage, { id: payload })
+      const data = yield call(deleteTaskURL, { id: payload })
       if (data.success) {
         notification.success({message: "Амжилттай устгалаа"})
+        store.set('isInit', false);
+        yield put({ type: 'app/query' })
       } else {
         throw data
       }
@@ -63,27 +65,14 @@ export default modelExtend(pageModel, {
     *update({ payload }, { select, call, put }) {
       const id = payload.id;
       const newWorkPackage = { ...payload, id }
-      const data = yield call(updateWorkPackage, newWorkPackage)
+      const data = yield call(updateTaskURL, newWorkPackage)
       if (data.success) {
-        notification.success({message: "Амжилттай заслаа"})
       } else {
         throw data
       }
     },
 
-    *addComment({ payload }, { select, call, put }) {
-      console.log("payload:: ", payload);
-      const id = payload.id;
-      const comment = { ...payload, id }
-      const data = yield call(addCommentWorkPackage, comment)
-      if (data.success) {
-        return data;
-      } else {
-        throw data
-      }
-    },
-
-    *createTask({ payload }, { call, put }) {
+    *create({ payload }, { call, put }) {
       console.log(payload);
       const data = yield call( createTaskURL, payload)
       const { success, message, status, ...other } = data
@@ -96,24 +85,13 @@ export default modelExtend(pageModel, {
       }
     },
 
-    *updateTask({ payload }, { select, call, put }) {
+    *addComment({ payload }, { select, call, put }) {
+      console.log("payload:: ", payload);
       const id = payload.id;
-      const newWorkPackage = { ...payload, id }
-      const data = yield call(updateTaskURL, newWorkPackage)
+      const comment = { ...payload, id }
+      const data = yield call(addCommentTask, comment)
       if (data.success) {
-        notification.success({message: "Амжилттай заслаа"})
-      } else {
-        throw data
-      }
-    },
-
-    *deleteTask({ payload }, { call, put, select }) {
-      const data = yield call(deleteTaskURL, { id: payload })
-      if (data.success) {
-        notification.success({message: "Амжилттай устгалаа"})
-        store.set('isInit', false);
-        yield put({ type: 'app/query' })
-        return data
+        return data;
       } else {
         throw data
       }

@@ -175,10 +175,6 @@ class Header extends PureComponent {
             }
           >
 
-            <Menu.Item key="AccountManagement">
-              <Trans>Багын удирдлага</Trans>
-            </Menu.Item>
-
             <Menu.Item key="SignOut">
               <Trans>Гарах</Trans>
             </Menu.Item>
@@ -202,18 +198,6 @@ class Header extends PureComponent {
           }}
           mode="horizontal"
         >
-          <SubMenu title={<Avatar size="small" src={currentLanguage.flag} />}>
-            {languages.map(item => (
-              <Menu.Item key={item.key}>
-                <Avatar
-                  size="small"
-                  style={{ marginRight: 8 }}
-                  src={item.flag}
-                />
-                {item.title}
-              </Menu.Item>
-            ))}
-          </SubMenu>
         </Menu>
       )
     }

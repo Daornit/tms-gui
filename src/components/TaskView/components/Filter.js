@@ -56,11 +56,11 @@ class Filter extends Component {
   }
 
   render() {
-    const { onAdd, filter, form, i18n, users = [] } = this.props
+    const { filter, form, i18n, users = [] } = this.props
     const { getFieldDecorator } = form
     const { name, status, assignee } = filter
 
-    const children = users.map(item => <AutoComplete.Option key={item.id}>{item.email}</AutoComplete.Option>);
+    let options = users.map(user => <Select.Option key={user.id} value={user.id}>{user.email}</Select.Option>)
 
     return (
       <Row gutter={24}>
@@ -100,13 +100,9 @@ class Filter extends Component {
         </Col>
         <Col {...ColProps} xl={{ span: 5 }} md={{ span: 8 }}>
           {getFieldDecorator('assignee', { initialValue: assignee })(
-            <AutoComplete
-              dataSource={users}
-              style={{ width: '100%' }}
-              placeholder="Email хаягаар ажлын орчинд гишүүн нэмэх"
-            >
-              {children}
-            </AutoComplete>
+            <Select style={{ width: 120 }}>
+              {options}
+            </Select>
           )}
         </Col>
         <Col
@@ -136,7 +132,6 @@ class Filter extends Component {
 }
 
 Filter.propTypes = {
-  onAdd: PropTypes.func,
   form: PropTypes.object,
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,

@@ -79,7 +79,7 @@ class PrimaryLayout extends PureComponent {
       : false
 
     // MenuParentId is equal to -1 is not a available menu.
-    const menus = newRouteList.filter(_ => _.menuParentId !== '-1')
+    const menus = newRouteList.filter(_ => _.menuParentId !== -1)
 
     const headerProps = {
       menus,

@@ -10,12 +10,12 @@ import api from 'api'
 import config from 'config'
 import {notification} from "antd";
 
-const { inboxReadByCode, notificationUrl, inboxURL, workSpaceUsers,   queryRouteList, logoutUser, queryUserInfo, queryUserArray, createWorkSpaceUrl } = api
+const { inboxReadByCode, notificationUrl, inboxURL, workSpaceUsers, workPackageUsers, queryRouteList, logoutUser, queryUserInfo, queryUserArray, createWorkSpaceUrl } = api
 
 const goDashboard = () => {
-  if (pathMatchRegexp(['/', '/login', '/register', '/confirm'], window.location.pathname)) {
+  if (pathMatchRegexp(['/', '/login', '/register', '/confirm', '/home'], window.location.pathname)) {
     router.push({
-      pathname: '/dashboard',
+      pathname: '/to-do',
     })
   }
 }
@@ -24,13 +24,6 @@ export default {
   namespace: 'app',
   state: {
     routeList: [
-      {
-        id: '1',
-        icon: 'laptop',
-        name: 'Dashboard',
-        zhName: '仪表盘',
-        router: '/dashboard',
-      },
     ],
     locationPathname: '',
     locationQuery: {},
@@ -106,6 +99,16 @@ export default {
         throw data
       }
     },
+
+    *getWorkPackageUsers({ payload }, { call, put }) {
+      const data = yield call(workPackageUsers, payload)
+      const { success, message, status, ...other } = data
+      if (success) {
+        return data;
+      } else {
+        throw data
+      }
+    },
     *createWorkSpace({ payload }, { call, put }) {
       const data = yield call(createWorkSpaceUrl, payload)
       if (data.success) {
@@ -158,6 +161,13 @@ export default {
         store.set('isInit', true)
         goDashboard()
       } else if (queryLayout(config.layouts, locationPathname) !== 'public') {
+
+        if(pathMatchRegexp(['/home'], window.location.pathname)) {
+          router.push({
+            pathname: '/home',
+          })
+          return;
+        }
 
         if(pathMatchRegexp(['/register'], window.location.pathname)) {
           router.push({

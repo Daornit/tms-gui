@@ -8,7 +8,7 @@ const Error = () => (
     title="404"
     subTitle="Таны зочилсон хуудас алга"
     extra={
-      <Button type="primary" onClick={() => router.push('/dashboard')}>
+      <Button type="primary" onClick={() => router.push('/to-do')}>
         Нүүр хуудасруу буцах
       </Button>
     }

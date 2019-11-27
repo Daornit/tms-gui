@@ -1,7 +1,7 @@
 module.exports = {
-  siteName: 'AntD Admin',
-  copyright: 'Ant Design Admin  ©2019 zuiidea',
-  logoPath: '/logo.svg',
+  siteName: 'Creativity',
+  copyright: 'Creativity  ©2019 Д.Бат-Оргил',
+  logoPath: '/logo.png',
   apiPrefix: '/api/v1',
   fixedHeader: true, // sticky primary layout header
 
@@ -10,7 +10,7 @@ module.exports = {
     {
       name: 'primary',
       include: [/.*/],
-      exclude: [/(\/(en|zh|mn))*\/(login|register|confirm)/],
+      exclude: [/(\/(en|zh|mn))*\/(login|register|confirm|home)/],
     },
   ],
 

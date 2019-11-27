@@ -23,6 +23,16 @@ export default {
   deleteWorkPackage: 'DELETE /work-package/:id',
   updateWorkPackage: 'PUT /work-package/:id',
   addCommentWorkPackage: 'POST /work-package/:id/comment',
+  workPackageUsers: 'GET /work-package/:id/users',
+
+  toDoUrl: 'GET /to-do',
+  toAssignUrl: 'GET /to-assign',
+
+  createTaskURL: 'POST /task',
+  queryTask: '/task/:id',
+  deleteTaskURL: 'DELETE /task/:id',
+  updateTaskURL: 'PUT /task/:id',
+  addCommentTask: 'POST /task/:id/comment',
 
   queryUser: '/user/:id',
   queryUserList: '/team/users',
@@ -34,5 +44,5 @@ export default {
 
   queryPostList: '/posts',
 
-  queryDashboard: '/dashboard',
+  queryDashboard: '/to-do',
 }
