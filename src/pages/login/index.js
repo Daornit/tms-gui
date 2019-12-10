@@ -39,17 +39,6 @@ class Login extends PureComponent {
       },
     ]
 
-    if (config.i18n) {
-      footerLinks = footerLinks.concat(
-        config.i18n.languages.map(item => ({
-          key: item.key,
-          title: (
-            <span onClick={setLocale.bind(null, item.key)}>{item.title}</span>
-          ),
-        }))
-      )
-    }
-
     return (
       <Fragment>
         <div className={styles.form}>
@@ -83,16 +72,13 @@ class Login extends PureComponent {
               {getFieldDecorator('remember', {
                 valuePropName: 'checked',
                 initialValue: true,
-              })(<Checkbox>Remember me</Checkbox>)}
-              <a className="login-form-forgot" href="">
-                Forgot password
-              </a>
+              })(<Checkbox>Намайг сана</Checkbox>)}
               <Button type="primary"
                       onClick={this.handleOk}
                       loading={loading.effects.login}>
-                <Trans>Sign in</Trans>
+                <Trans>Нэвтрэх</Trans>
               </Button>
-              Or <a href="/en/register">register now!</a>
+              эсвэл <a href="/en/register">Системд бүртгүүлэх!</a>
             </Form.Item>
           </form>
         </div>

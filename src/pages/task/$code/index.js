@@ -5,18 +5,13 @@ import { Page } from 'components'
 import { pathMatchRegexp } from 'utils'
 import {
   Typography,
-  Tabs,
-  Tree,
-  Comment,
   Avatar,
-  Form,
   Button,
-  List,
   Input,
-  Mentions,
   Icon,
   Select,
-  Tooltip
+  Tooltip,
+  Upload
 } from 'antd';
 import CKEditor from "ckeditor4-react";
 import store from "store";
@@ -30,19 +25,36 @@ class TaskDetail extends PureComponent {
     submitting: false,
     content: '',
     users: [],
+    process: 0,
+    code: '',
+    files: []
   }
 
   componentDidMount() {
     let { dispatch, location } = this.props;
     const match = pathMatchRegexp('/task/:id', location.pathname)
     if (match) {
+      this.setState({code: match[1]});
       dispatch({ type: 'task/queryPromise', payload: { id: match[1] } }).
       then(task => {
-        this.setState({content: task.content});
+        this.setState({content: task.content, process: task.process});
         dispatch({ type: 'app/getWorkPackageUsers', payload: { id: task.workPackageCode} })
           .then( data => {
             this.setState({users: data.list});
           })
+      })
+
+      console.log("queryAttachList");
+      dispatch({ type: 'task/queryAttachList', payload: { id: match[1] } }).
+      then(files => {
+        let fls = files.list.map(x => { return {
+          uid: x.id,
+          status: 'done',
+          type: x.contentType,
+          name: x.name,
+          url: 'http://localhost:7000/api/v1/download/' + x.id}
+        });
+        this.setState({files: fls});
       })
     }
   }
@@ -67,7 +79,7 @@ class TaskDetail extends PureComponent {
     let { data } = this.props.task;
 
     data.content = this.state.content;
-
+    data.process = this.state.process;
     dispatch({
       type: 'task/update',
       payload: {
@@ -96,12 +108,36 @@ class TaskDetail extends PureComponent {
     });
   }
 
-  changeStatus = ( status, task ) => {
+  changeProcess = ( process, task ) => {
     let { dispatch } = this.props;
-    task.status = status
+    task.process = process.target.value
     dispatch({type: 'task/update', payload: task}).then(()=>{
       this.refresh();
     });
+  }
+
+  changeStatus = ( status, task ) => {
+    let { dispatch } = this.props;
+    task.taskStatus = status
+    dispatch({type: 'task/update', payload: task}).then(()=>{
+      this.refresh();
+    });
+  }
+
+  onChangeFileList = ({ file, fileList }) => {
+    let {dispatch} = this.props
+    console.log(file, fileList);
+    dispatch({ type: 'task/queryAttachList', payload: { id: this.state.code } }).
+    then(files => {
+      let fls = files.list.map(x => { return {
+        uid: x.id,
+        status: 'done',
+        type: x.contentType,
+        name: x.name,
+        url: 'http://localhost:7000/api/v1/download/' + x.id}
+      });
+      this.setState({files: fls});
+    })
   }
 
   refresh(){
@@ -112,6 +148,7 @@ class TaskDetail extends PureComponent {
 
 
   render() {
+    let { location } = this.props;
     let { data } = this.props.task;
     let { owner } = data;
     let mode = true;
@@ -121,12 +158,12 @@ class TaskDetail extends PureComponent {
       mode = false;
     }
     let options = this.state.users ? this.state.users.map(user => <Select.Option key={user.id} value={user.id}>{user.email}</Select.Option>) : []
-
+    console.log("task", data)
     return (
       <Page inner>
         <div>
           <Title level={4} editable={{ onChange: this.onNameChange }}>{data.name}</Title>
-          <div>
+          <div style={{ display: "flex"}}>
             <div style={{ display: "flex" , float: "left", justifyContent: "center", paddingRight: '15px'}}>
               <Tooltip style={{backgroundColor: "white"}} placement="bottom" title={
                 <Select defaultValue={data.assignId} style={{ width: 120 }} onChange={(e) => this.assignPerson(e, data)}>
@@ -136,7 +173,7 @@ class TaskDetail extends PureComponent {
                 <Avatar src={data.assign ? data.assign.avatar : '/plus.svg'}/>
               </Tooltip>
             </div>
-            <Select defaultValue={data.status} style={{width: '170px', marginBottom: '15px'}} onChange={(e) => this.changeStatus(e, data)}>
+            <Select value={data.taskStatus} style={{width: '170px', marginBottom: '15px'}} onChange={(e) => this.changeStatus(e, data)}>
               <Select.Option value="new" label="Шинэ">
                 <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px"}}/>
                 Шинэ
@@ -158,6 +195,10 @@ class TaskDetail extends PureComponent {
                 Хийгдэж байгаа
               </Select.Option>
             </Select>
+
+            <div style={{display: "flex", lineHeight: '32px', marginLeft: '20px'}}>
+              Гүйцэтгэлийн хувь: <Input type="number" value={this.state.process} onChange={e => this.setState({process: e.target.value})}  style={{width: '80px', marginLeft: '20px'}}/>
+            </div>
           </div>
         </div>
 
@@ -168,6 +209,12 @@ class TaskDetail extends PureComponent {
           config={{ height: 600,removePlugins: 'elementspath', readOnly: mode }}
           onChange={this.onEditorChange}
         />
+        <Upload action={'http://localhost:7000/api/v1/upload/' + this.state.code} fileList={this.state.files} onChange={this.onChangeFileList}
+        >
+          <Button>
+            <Icon type="upload" /> Файл хавсаргах
+          </Button>
+        </Upload>
         {this.state.users ?
           <UserComment
             users={this.state.users.list}

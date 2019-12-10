@@ -5,7 +5,7 @@ import { pageModel } from 'utils/model'
 import {notification} from "antd";
 import store from "store";
 
-const { createTaskURL, deleteTaskURL, updateTaskURL, queryTask, addCommentTask  } = api
+const { createTaskURL, deleteTaskURL, updateTaskURL, queryTask, addCommentTask, queryTaskFile  } = api
 
 export default modelExtend(pageModel, {
   namespace: 'task',
@@ -43,6 +43,16 @@ export default modelExtend(pageModel, {
 
     *queryPromise({ payload }, { call, put }) {
       const data = yield call(queryTask, payload)
+      const { success, message, status, ...other } = data
+      if (success) {
+        return data;
+      } else {
+        throw data
+      }
+    },
+
+    *queryAttachList({ payload }, { call, put }){
+      const data = yield call(queryTaskFile, payload)
       const { success, message, status, ...other } = data
       if (success) {
         return data;

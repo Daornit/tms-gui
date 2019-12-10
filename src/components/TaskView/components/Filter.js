@@ -58,7 +58,7 @@ class Filter extends Component {
   render() {
     const { filter, form, i18n, users = [] } = this.props
     const { getFieldDecorator } = form
-    const { name, status, assignee } = filter
+    const { name, taskStatus, assignee } = filter
 
     let options = users.map(user => <Select.Option key={user.id} value={user.id}>{user.email}</Select.Option>)
 
@@ -73,7 +73,7 @@ class Filter extends Component {
           )}
         </Col>
         <Col {...ColProps} xl={{ span: 5 }} md={{ span: 8 }}>
-          {getFieldDecorator('status', { initialValue: status })(
+          {getFieldDecorator('taskStatus', { initialValue: taskStatus })(
             <Select style={{width: '170px'}}>
               <Option value="new" label="Шинэ">
                 <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px"}}/>

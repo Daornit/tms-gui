@@ -5,7 +5,7 @@ import { pageModel } from 'utils/model'
 import {notification} from "antd";
 import store from "store";
 
-const { createTaskURL, deleteTaskURL, updateTaskURL, addCommentWorkPackage, queryWorkPackage, deleteWorkPackage, updateWorkPackage  } = api
+const { downloadFile, packageFileTree, createTaskURL, deleteTaskURL, updateTaskURL, addCommentWorkPackage, queryWorkPackage, deleteWorkPackage, updateWorkPackage  } = api
 
 export default modelExtend(pageModel, {
   namespace: 'workPackageDetail',
@@ -43,6 +43,26 @@ export default modelExtend(pageModel, {
 
     *queryWorkPackage({ payload }, { call, put }) {
       const data = yield call(queryWorkPackage, payload)
+      const { success, message, status, ...other } = data
+      if (success) {
+        return data;
+      } else {
+        throw data
+      }
+    },
+
+    *packageFileTree({ payload }, { call, put }) {
+      const data = yield call(packageFileTree, payload)
+      const { success, message, status, ...other } = data
+      if (success) {
+        return data;
+      } else {
+        throw data
+      }
+    },
+
+    *downloadFileById({ payload }, { call, put }) {
+      const data = yield call(downloadFile, payload)
       const { success, message, status, ...other } = data
       if (success) {
         return data;

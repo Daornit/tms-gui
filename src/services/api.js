@@ -24,12 +24,15 @@ export default {
   updateWorkPackage: 'PUT /work-package/:id',
   addCommentWorkPackage: 'POST /work-package/:id/comment',
   workPackageUsers: 'GET /work-package/:id/users',
+  packageFileTree: 'GET /fileByPackage/:id',
+  downloadFile: 'GET /download/:id',
 
   toDoUrl: 'GET /to-do',
   toAssignUrl: 'GET /to-assign',
 
   createTaskURL: 'POST /task',
   queryTask: '/task/:id',
+  queryTaskFile: '/fileList/:id',
   deleteTaskURL: 'DELETE /task/:id',
   updateTaskURL: 'PUT /task/:id',
   addCommentTask: 'POST /task/:id/comment',

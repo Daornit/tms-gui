@@ -12,7 +12,7 @@ class TaskView extends React.Component{
   state = {
     filter: {
       name: null,
-      status: null,
+      taskStatus: null,
       assignee: null
     }
   };
@@ -41,7 +41,7 @@ class TaskView extends React.Component{
       startDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
       endDate: moment(new Date() + (1000 * 60 * 60 * 24) ).format("YYYY-MM-DD HH:mm:ss"),
       process: 0,
-      status: 'new',
+      taskStatus: 'new',
       workPackageCode: workPackageCode
     }
     addTask(task);
@@ -54,7 +54,7 @@ class TaskView extends React.Component{
       startDate: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
       endDate: moment(new Date() + (1000 * 60 * 60 * 24) ).format("YYYY-MM-DD HH:mm:ss"),
       process: 0,
-      status: 'new',
+      taskStatus: 'new',
       workPackageCode: workPackageCode,
       parentId: parentId}
     addTask(task);
@@ -95,7 +95,7 @@ class TaskView extends React.Component{
     let { filter } = this.state
     if(filter && filter !== null && filter !== undefined){
       if(filter.name) result = result.filter(x => x.name.includes(filter.name));
-      if(filter.status) result = result.filter(x => x.status === filter.status);
+      if(filter.taskStatus) result = result.filter(x => x.taskStatus === filter.taskStatus);
       if(filter.assignee) result = result.filter(x => x.assignId === filter.assignee);
     }
     console.log("Filtered :: ", result, filter);
@@ -104,6 +104,7 @@ class TaskView extends React.Component{
 
   render() {
     let { tasks, users, assignPerson, onNameChange, onTaskDelete, changeDate, mode } = this.props;
+    let googleTasks = this.generateDataForGoogleChart([], this.filterTask(tasks));
     return (
       <div>
         <Filter {...this.filterProps} />
@@ -122,18 +123,18 @@ class TaskView extends React.Component{
             />
           </TabPane>
           <TabPane tab="Гант чарт" key="2">
-            <Chart
+            {googleTasks ? <Chart
               width={'100%'}
               chartType="Gantt"
-              data={this.generateDataForGoogleChart([], this.filterTask(tasks))}
+              data={googleTasks}
               options={{
-                height: (this.generateDataForGoogleChart([], this.filterTask(tasks)).length * 30) + 50,
+                height: (googleTasks.length * 30) + 50,
                 gantt: {
                   trackHeight: 30,
                 },
               }}
               rootProps={{ 'data-testid': '2' }}
-            />
+            /> : 'Алдаа даалгавар олдсонгүй'}
           </TabPane>
         </Tabs>
       </div>

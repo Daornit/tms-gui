@@ -82,14 +82,14 @@ class Filter extends Component {
                 className="margin-right"
                 onClick={this.handleSubmit}
               >
-                <Trans>Search</Trans>
+                <Trans>Хайх</Trans>
               </Button>
               <Button onClick={this.handleReset}>
-                <Trans>Reset</Trans>
+                <Trans>Шинжлэх</Trans>
               </Button>
             </div>
             <Button type="ghost" onClick={onAdd}>
-              <Trans>Create Work Package</Trans>
+              <Trans>Шинэ хэрэглэгч</Trans>
             </Button>
           </Row>
         </Col>

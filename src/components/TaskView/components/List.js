@@ -88,11 +88,11 @@ class ListTask extends PureComponent {
                     <div style={{display: "flex", position: "relative", top: '-7px'}}>
                       <Paragraph editable={{ onChange: (e) => onNameChange(e, item) }} >{item.name}</Paragraph>
                       <span>
-                        {item.status === 'new' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px"}}/> : ''}
-                        {item.status === 'complete' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#00d600"}}/>: ''}
-                        {item.status === 'cancelled' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "rgb(162, 162, 162)"}}/>: ''}
-                        {item.status === 'approved' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#ffbf00"}}/>: ''}
-                        {item.status === 'process' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#3fa5ff"}}/>: ''}
+                        {item.taskStatus === 'new' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px"}}/> : ''}
+                        {item.taskStatus === 'complete' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#00d600"}}/>: ''}
+                        {item.taskStatus === 'cancelled' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "rgb(162, 162, 162)"}}/>: ''}
+                        {item.taskStatus === 'approved' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#ffbf00"}}/>: ''}
+                        {item.taskStatus === 'process' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#3fa5ff"}}/>: ''}
                       </span>
                     </div>
                   </Tooltip>
@@ -133,11 +133,11 @@ class ListTask extends PureComponent {
                 <div style={{display: "flex", position: "relative", top: '-7px'}}>
                   <Paragraph editable={{ onChange: (e) => onNameChange(e, item) }} >{item.name}</Paragraph>
                   <span>
-                    {item.status === 'new' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px"}}/> : ''}
-                    {item.status === 'complete' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#00d600"}}/>: ''}
-                    {item.status === 'cancelled' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "rgb(162, 162, 162)"}}/>: ''}
-                    {item.status === 'approved' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#ffbf00"}}/>: ''}
-                    {item.status === 'process' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#3fa5ff"}}/>: ''}
+                    {item.taskStatus === 'new' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px"}}/> : ''}
+                    {item.taskStatus === 'complete' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#00d600"}}/>: ''}
+                    {item.taskStatus === 'cancelled' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "rgb(162, 162, 162)"}}/>: ''}
+                    {item.taskStatus === 'approved' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#ffbf00"}}/>: ''}
+                    {item.taskStatus === 'process' ? <Icon type="thunderbolt" theme="filled" style={{paddingRight: "10px", color: "#3fa5ff"}}/>: ''}
                   </span>
                 </div>
 

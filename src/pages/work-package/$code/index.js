@@ -27,6 +27,7 @@ class WorkPackageDetail extends PureComponent {
     submitting: false,
     value: '',
     users: [],
+    fileTree: {},
   }
 
   componentDidMount() {
@@ -40,6 +41,11 @@ class WorkPackageDetail extends PureComponent {
           .then( data => {
             console.log("users :: " ,data)
             this.setState({users: data});
+            dispatch({ type: 'workPackageDetail/packageFileTree', payload: { id: match[1]} })
+              .then( fileTree => {
+                console.log("fileTree" , fileTree);
+                this.setState({fileTree: fileTree});
+              })
           })
       })
     }
@@ -134,6 +140,14 @@ class WorkPackageDetail extends PureComponent {
     })
   }
 
+  onSelect = (node) => {
+    let { dispatch } = this.props
+    if(node[0].length === 36){
+      dispatch({ type: 'workPackageDetail/downloadFileById', payload: { id: node[0]} })
+        .then(data => console.log("succ"));
+    }
+  }
+
   refresh(){
     let { dispatch, location } = this.props;
     const match = pathMatchRegexp('/work-package/:id', location.pathname)
@@ -187,15 +201,12 @@ class WorkPackageDetail extends PureComponent {
               users={this.state.users.list}/>
           </TabPane>
           <TabPane tab="Файл сан" key="3">
-            <DirectoryTree multiple defaultExpandAll onSelect={this.onSelect} onExpand={this.onExpand}>
-              <TreeNode title="parent 0" key="0-0">
-                <TreeNode title="leaf 0-0" key="0-0-0" isLeaf />
-                <TreeNode title="leaf 0-1" key="0-0-1" isLeaf />
-              </TreeNode>
-              <TreeNode title="parent 1" key="0-1">
-                <TreeNode title="leaf 1-0" key="0-1-0" isLeaf />
-                <TreeNode title="leaf 1-1" key="0-1-1" isLeaf />
-              </TreeNode>
+            <DirectoryTree
+              multiple
+              defaultExpandAll
+              onSelect={this.onSelect}
+              onExpand={this.onExpand}
+              treeData={this.state.fileTree.children}>
             </DirectoryTree>
           </TabPane>
         </Tabs>
